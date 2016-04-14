@@ -57,9 +57,9 @@ func main() {
 
 func executeCmd(cmdChan chan string, wg *sync.WaitGroup) {
 	for cmd1 := range cmdChan {
-		fmt.Println("starting command: ", cmd1)
+		// fmt.Println("starting command: ", cmd1)
 		// args := strings.Split(cmd1, " ")
-		cmd := exec.Command("sh", "-c", cmd1)
+		cmd := exec.Command("sh", "-c", cmd1) //use the shell to interpret the command
 		err := cmd.Run()
 		if err != nil {
 			fmt.Println(err)
