@@ -52,9 +52,9 @@ func main() {
 				fmt.Println(out)
 			} else {
 				cmdChan <- out
+				fmt.Printf("Job %d of %d started\n", jobsStarted, jobsTotal)
+				fmt.Println("Time elapsed since start ", time.Since(start))
 			}
-			fmt.Printf("Job %d of %d started\n", jobsStarted, jobsTotal)
-			fmt.Println("Time elapsed since start ", time.Since(start))
 		}
 	}
 	close(cmdChan)
