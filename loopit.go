@@ -8,6 +8,7 @@ import (
 	"os/exec"
 	"regexp"
 	"runtime"
+	"strconv"
 	"sync"
 	"time"
 )
@@ -30,6 +31,7 @@ func main() {
 	check(err)
 	re1 := regexp.MustCompile("MYFILE1")
 	re2 := regexp.MustCompile("MYFILE2")
+	job := regexp.MustCompile("MYJOB")
 	cmdChan := make(chan string)
 	var wg sync.WaitGroup
 	if !*pretend {
@@ -39,14 +41,20 @@ func main() {
 		}
 	}
 	start := time.Now()
+	jobsStarted := 0
+	jobsTotal := len(list1) * len(list2)
 	for _, f1 := range list1 {
 		for _, f2 := range list2 {
-			out := re1.ReplaceAllString(re2.ReplaceAllString(*cmd, f2), f1)
+			jobsStarted++
+			jobNum := strconv.Itoa(jobsStarted)
+			out := job.ReplaceAllString(re1.ReplaceAllString(re2.ReplaceAllString(*cmd, f2), f1), jobNum)
 			if *pretend {
 				fmt.Println(out)
 			} else {
 				cmdChan <- out
 			}
+			fmt.Printf("Job %d of %d started\n", jobsStarted, jobsTotal)
+			fmt.Println("Time elapsed since start ", time.Since(start))
 		}
 	}
 	close(cmdChan)
