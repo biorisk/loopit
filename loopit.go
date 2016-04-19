@@ -13,6 +13,11 @@ import (
 	"time"
 )
 
+type Job struct {
+	Start time.Time
+	Cmd   string
+}
+
 func main() {
 	numCPU := runtime.NumCPU()
 	runtime.GOMAXPROCS(numCPU)
@@ -32,7 +37,7 @@ func main() {
 	re1 := regexp.MustCompile("MYFILE1")
 	re2 := regexp.MustCompile("MYFILE2")
 	job := regexp.MustCompile("MYJOB")
-	cmdChan := make(chan string)
+	cmdChan := make(chan Job)
 	var wg sync.WaitGroup
 	if !*pretend {
 		for i := 0; i < *multi; i++ {
@@ -51,7 +56,8 @@ func main() {
 			if *pretend {
 				fmt.Println(out)
 			} else {
-				cmdChan <- out
+				cmd := Job{Start: time.Now(), Cmd: out}
+				cmdChan <- cmd
 				fmt.Printf("Job %d of %d started\n", jobsStarted, jobsTotal)
 				fmt.Println("Time elapsed since start ", time.Since(start))
 			}
@@ -63,11 +69,11 @@ func main() {
 	fmt.Println("Elapsed time:", time.Since(start))
 }
 
-func executeCmd(cmdChan chan string, wg *sync.WaitGroup) {
+func executeCmd(cmdChan chan Job, wg *sync.WaitGroup) {
 	for cmd1 := range cmdChan {
 		// fmt.Println("starting command: ", cmd1)
 		// args := strings.Split(cmd1, " ")
-		cmd := exec.Command("sh", "-c", cmd1) //use the shell to interpret the command
+		cmd := exec.Command("sh", "-c", cmd1.Cmd) //use the shell to interpret the command
 		err := cmd.Run()
 		if err != nil {
 			fmt.Println(err)
