@@ -32,8 +32,11 @@ func main() {
 	}
 	list1, err := readLines(*file1)
 	check(err)
-	list2, err := readLines(*file2)
-	check(err)
+	list2 := []string{"null"}
+	if *file2 != "" {
+		list2, err = readLines(*file2)
+		check(err)
+	}
 	re1 := regexp.MustCompile("MYFILE1")
 	re2 := regexp.MustCompile("MYFILE2")
 	job := regexp.MustCompile("MYJOB")
