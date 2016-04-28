@@ -1,6 +1,7 @@
 # loopit
 Loop through combinations of parameters while executing a command on each permutation.
 
+```
 Flags:
   -c string
         Command to execute. Use MYFILE1, MYFILE2, ..., MYFILE9 as wildcards
@@ -10,14 +11,19 @@ Flags:
         number of simultaneous commands (default 1)
   -p  boolean
         Pretend. List commands that would have been run.
+```
 
+```
 Special argument prefixes:
 list: - a comma separated list of parameters
 glob: - a string representing a file glob
 stdin - read parameter list from stdin
+```
 
+```
 Special variable:
 MYJOB - an integer of the job number
+```
 
 Example:
 ```
